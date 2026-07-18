@@ -215,27 +215,15 @@
         -webkit-text-fill-color: transparent;
       }
 
-      /* Two/three color gradient */
+      /* Two color gradient - repeating pattern */
       .twoColorGradient {
         background: linear-gradient(
           to right,
           var(--custom-gradient-color-1),
           var(--custom-gradient-color-2),
-          var(--custom-gradient-color-3)
+          var(--custom-gradient-color-1)
         );
-      }
-
-      /* Repeating gradient for animation */
-      .twoColorGradient.animated {
-        background: linear-gradient(
-          to right,
-          var(--custom-gradient-color-1),
-          var(--custom-gradient-color-2),
-          var(--custom-gradient-color-3),
-          var(--custom-gradient-color-1),
-          var(--custom-gradient-color-2),
-          var(--custom-gradient-color-3)
-        );
+        background-size: 100px auto;
       }
 
       /* DNS font styling */
@@ -333,24 +321,29 @@
         font-size: 14px;
       }
 
-      /* Animated gradient */
+      /* Animated gradient - Discord exact keyframes */
       .gradient-name.animated {
-        background-size: 200% 100%;
-        animation: gradientShift 3s linear infinite;
+        animation: gradientUsernameAnimation 4s linear infinite;
       }
 
       .gradient-name.animated::after {
-        background-size: 200% 100%;
-        animation: gradientShift 3s linear infinite;
+        animation: gradientUsernameAnimation 4s linear infinite;
       }
 
-      @keyframes gradientShift {
-        0% {
-          background-position: 0% 50%;
-        }
-        100% {
-          background-position: -100% 50%;
-        }
+      @keyframes gradientUsernameAnimation {
+        0% { background-position-x: 43px; }
+        8.33% { background-position-x: 98px; }
+        16.66% { background-position-x: 79px; }
+        25% { background-position-x: 53px; }
+        33.33% { background-position-x: 92px; }
+        41.66% { background-position-x: 28px; }
+        50% { background-position-x: 63px; }
+        58.33% { background-position-x: 2px; }
+        66.66% { background-position-x: 41px; }
+        75% { background-position-x: 75px; }
+        83.33% { background-position-x: 14px; }
+        91.66% { background-position-x: 53px; }
+        100% { background-position-x: 92px; }
       }
 
       /* Background preset buttons */
@@ -472,15 +465,11 @@
           <div class="color-row">
             <div class="color-input">
               <input type="color" id="color1" value="#a067f7" />
-              <span>Start</span>
+              <span>Color 1</span>
             </div>
             <div class="color-input">
               <input type="color" id="color2" value="#a8dffd" />
-              <span>Middle</span>
-            </div>
-            <div class="color-input">
-              <input type="color" id="color3" value="#a067f7" />
-              <span>End</span>
+              <span>Color 2</span>
             </div>
           </div>
         </div>
@@ -578,7 +567,6 @@
       const fontSizeValue = document.getElementById('fontSizeValue');
       const color1 = document.getElementById('color1');
       const color2 = document.getElementById('color2');
-      const color3 = document.getElementById('color3');
       const bgColor = document.getElementById('bgColor');
       const bgPresets = document.getElementById('bgPresets');
       const preview = document.getElementById('preview');
@@ -602,10 +590,9 @@
         preview.textContent = name;
         preview.setAttribute('data-text', name);
 
-        // Update gradient colors
+        // Update gradient colors (color1 is used for start and end)
         preview.style.setProperty('--custom-gradient-color-1', color1.value);
         preview.style.setProperty('--custom-gradient-color-2', color2.value);
-        preview.style.setProperty('--custom-gradient-color-3', color3.value);
         preview.style.textDecorationColor = color1.value;
 
         // Update background
@@ -687,7 +674,6 @@
       fontSizeSlider.addEventListener('input', updatePreview);
       color1.addEventListener('input', updatePreview);
       color2.addEventListener('input', updatePreview);
-      color3.addEventListener('input', updatePreview);
       bgColor.addEventListener('input', handleBgColorChange);
       bgPresets.addEventListener('click', handleBgPresetClick);
       animationToggle.addEventListener('click', toggleAnimation);
