@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Discord Gradient Role Simulator</title>
+    <!-- Load Google Fonts for presets -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Lato:wght@400;700&family=Montserrat:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Discord-like font face approximation */
+      @font-face {
+        font-family: 'gg sans';
+        src: local('gg sans'), local('Noto Sans'), local('Helvetica Neue');
+        font-weight: 400;
+      }
+      @font-face {
+        font-family: 'gg sans';
+        src: local('gg sans'), local('Noto Sans'), local('Helvetica Neue');
+        font-weight: 500;
+      }
+      @font-face {
+        font-family: 'gg sans';
+        src: local('gg sans'), local('Noto Sans'), local('Helvetica Neue');
+        font-weight: 600;
+      }
+      @font-face {
+        font-family: 'gg sans';
+        src: local('gg sans'), local('Noto Sans'), local('Helvetica Neue');
+        font-weight: 700;
+      }
+
+      :root {
+        --font-weight-medium: 500;
+        --text-strong: #f2f3f5;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'gg sans', 'Noto Sans', 'Helvetica Neue', Helvetica, Arial,
+          sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 40px 20px;
+        transition: background-color 0.3s ease;
+        background-color: #313338;
+      }
+
+      h1 {
+        color: #fff;
+        margin-bottom: 30px;
+        font-size: 24px;
+        text-align: center;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        width: 100%;
+        max-width: 700px;
+      }
+
+      .controls {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 12px;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .control-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .control-group label {
+        color: #b5bac1;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+      }
+
+      .control-group input[type='text'] {
+        background: #1e1f22;
+        border: none;
+        border-radius: 4px;
+        padding: 10px 12px;
+        color: #dbdee1;
+        font-size: 16px;
+        outline: none;
+      }
+
+      .control-group input[type='text']:focus {
+        box-shadow: 0 0 0 2px #5865f2;
+      }
+
+      .control-group select {
+        background: #1e1f22;
+        border: none;
+        border-radius: 4px;
+        padding: 10px 12px;
+        color: #dbdee1;
+        font-size: 14px;
+        outline: none;
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23b5bac1' d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        padding-right: 36px;
+      }
+
+      .control-group select:focus {
+        box-shadow: 0 0 0 2px #5865f2;
+      }
+
+      .preset-row {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .preset-row select {
+        flex: 1;
+        min-width: 150px;
+      }
+
+      .color-row {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
+      .color-input {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .color-input input[type='color'] {
+        width: 40px;
+        height: 40px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        background: none;
+        padding: 0;
+      }
+
+      .color-input input[type='color']::-webkit-color-swatch-wrapper {
+        padding: 2px;
+      }
+
+      .color-input input[type='color']::-webkit-color-swatch {
+        border: none;
+        border-radius: 6px;
+      }
+
+      .color-input span {
+        color: #b5bac1;
+        font-size: 14px;
+      }
+
+      .preview-section {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 12px;
+        padding: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 120px;
+      }
+
+      /* ===== Discord exact gradient role styling ===== */
+
+      /* Base username styles from Discord */
+      .username {
+        color: var(--text-strong);
+        display: inline;
+        flex-shrink: 0;
+        font-size: 1rem;
+        font-weight: var(--font-weight-medium);
+        line-height: 1.375rem;
+        overflow: hidden;
+        position: relative;
+        vertical-align: baseline;
+      }
+
+      /* Gradient convenience glow container */
+      .convenienceGlowGradient {
+        position: relative;
+        z-index: 0;
+      }
+
+      /* Username gradient effect */
+      .usernameGradient {
+        -webkit-background-clip: text !important;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      /* Two/three color gradient */
+      .twoColorGradient {
+        background: linear-gradient(
+          to right,
+          var(--custom-gradient-color-1),
+          var(--custom-gradient-color-2),
+          var(--custom-gradient-color-3)
+        );
+      }
+
+      /* Repeating gradient for animation */
+      .twoColorGradient.animated {
+        background: linear-gradient(
+          to right,
+          var(--custom-gradient-color-1),
+          var(--custom-gradient-color-2),
+          var(--custom-gradient-color-3),
+          var(--custom-gradient-color-1),
+          var(--custom-gradient-color-2),
+          var(--custom-gradient-color-3)
+        );
+      }
+
+      /* DNS font styling */
+      .dnsFont {
+        font-synthesis: none;
+      }
+
+      /* Zilla Slab / Tempo style */
+      .zillaSlab {
+        font-family: Tempo, 'gg sans', Arial, sans-serif;
+        letter-spacing: 0.03em;
+      }
+
+      /* Glow effect pseudo-element */
+      .convenienceGlowGradient::after {
+        background: inherit;
+        -webkit-background-clip: text;
+        background-clip: text;
+        content: attr(data-text);
+        inset: 0;
+        position: absolute;
+        -webkit-text-fill-color: transparent;
+        filter: blur(4px);
+        opacity: 0;
+        text-indent: 0;
+        transition: opacity 0.1s ease-in-out;
+        z-index: -1;
+      }
+
+      /* Active glow state (on hover) */
+      .convenienceGlowGradient:hover::after,
+      .convenienceGlowGradientActive::after {
+        opacity: 0.7;
+        transition: opacity 0.1s ease-in-out;
+      }
+
+      /* Combined gradient name class for preview */
+      .gradient-name {
+        --custom-gradient-color-1: #a067f7;
+        --custom-gradient-color-2: #a8dffd;
+        --custom-gradient-color-3: #a067f7;
+        text-decoration-color: var(--custom-gradient-color-1);
+
+        /* Scale up for preview visibility */
+        font-size: 2rem;
+        line-height: 1.375;
+      }
+
+      .hint {
+        color: #72767d;
+        font-size: 12px;
+        text-align: center;
+        margin-top: -10px;
+      }
+
+      /* Toggle switches */
+      .toggle-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .toggle {
+        position: relative;
+        width: 40px;
+        height: 24px;
+        background: #72767d;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: background 0.2s ease;
+      }
+
+      .toggle.active {
+        background: #23a559;
+      }
+
+      .toggle::after {
+        content: '';
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        background: #fff;
+        border-radius: 50%;
+        top: 3px;
+        left: 3px;
+        transition: transform 0.2s ease;
+      }
+
+      .toggle.active::after {
+        transform: translateX(16px);
+      }
+
+      .toggle-label {
+        color: #b5bac1;
+        font-size: 14px;
+      }
+
+      /* Animated gradient */
+      .gradient-name.animated {
+        background-size: 200% 100%;
+        animation: gradientShift 3s linear infinite;
+      }
+
+      .gradient-name.animated::after {
+        background-size: 200% 100%;
+        animation: gradientShift 3s linear infinite;
+      }
+
+      @keyframes gradientShift {
+        0% {
+          background-position: 0% 50%;
+        }
+        100% {
+          background-position: -100% 50%;
+        }
+      }
+
+      /* Background preset buttons */
+      .preset-buttons {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .preset-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        border: 2px solid transparent;
+        cursor: pointer;
+        transition: border-color 0.2s ease, transform 0.1s ease;
+      }
+
+      .preset-btn:hover {
+        transform: scale(1.1);
+      }
+
+      .preset-btn.active {
+        border-color: #5865f2;
+      }
+
+      /* Font size slider */
+      input[type='range'] {
+        width: 100%;
+        height: 6px;
+        background: #1e1f22;
+        border-radius: 3px;
+        outline: none;
+        -webkit-appearance: none;
+      }
+
+      input[type='range']::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 16px;
+        height: 16px;
+        background: #5865f2;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+
+      input[type='range']::-moz-range-thumb {
+        width: 16px;
+        height: 16px;
+        background: #5865f2;
+        border-radius: 50%;
+        cursor: pointer;
+        border: none;
+      }
+
+      .range-labels {
+        display: flex;
+        justify-content: space-between;
+        color: #72767d;
+        font-size: 11px;
+        margin-top: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Discord Gradient Role Simulator</h1>
+
+    <div class="container">
+      <div class="controls">
+        <div class="control-group">
+          <label>Display Name</label>
+          <input
+            type="text"
+            id="nameInput"
+            value="root na buiset"
+            placeholder="Enter name..."
+          />
+        </div>
+
+        <div class="control-group">
+          <label>Font Style</label>
+          <div class="preset-row">
+            <select id="fontPreset">
+              <option value="gg sans">gg sans (Discord Default)</option>
+              <option value="tempo">Tempo (Nitro Style)</option>
+              <option value="noto">Noto Sans</option>
+              <option value="roboto">Roboto</option>
+              <option value="open-sans">Open Sans</option>
+              <option value="lato">Lato</option>
+              <option value="montserrat">Montserrat</option>
+              <option value="custom">Custom...</option>
+            </select>
+          </div>
+          <input
+            type="text"
+            id="customFont"
+            placeholder="Enter custom font family..."
+            style="display: none; margin-top: 8px"
+          />
+        </div>
+
+        <div class="control-group">
+          <label>Font Size</label>
+          <input
+            type="range"
+            id="fontSizeSlider"
+            min="12"
+            max="64"
+            value="32"
+          />
+          <div class="range-labels">
+            <span>12px</span>
+            <span id="fontSizeValue">32px</span>
+            <span>64px</span>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label>Gradient Colors</label>
+          <div class="color-row">
+            <div class="color-input">
+              <input type="color" id="color1" value="#a067f7" />
+              <span>Start</span>
+            </div>
+            <div class="color-input">
+              <input type="color" id="color2" value="#a8dffd" />
+              <span>Middle</span>
+            </div>
+            <div class="color-input">
+              <input type="color" id="color3" value="#a067f7" />
+              <span>End</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label>Background Presets</label>
+          <div class="preset-buttons" id="bgPresets">
+            <button
+              class="preset-btn active"
+              data-color="#313338"
+              style="background: #313338"
+              title="Discord Dark"
+            ></button>
+            <button
+              class="preset-btn"
+              data-color="#1e1f22"
+              style="background: #1e1f22"
+              title="Discord Darker"
+            ></button>
+            <button
+              class="preset-btn"
+              data-color="#2b2d31"
+              style="background: #2b2d31"
+              title="Discord Medium"
+            ></button>
+            <button
+              class="preset-btn"
+              data-color="#232428"
+              style="background: #232428"
+              title="Discord Sidebar"
+            ></button>
+            <button
+              class="preset-btn"
+              data-color="#ffffff"
+              style="background: #ffffff"
+              title="Light"
+            ></button>
+            <button
+              class="preset-btn"
+              data-color="#f2f3f5"
+              style="background: #f2f3f5"
+              title="Discord Light"
+            ></button>
+            <button
+              class="preset-btn"
+              data-color="#000000"
+              style="background: #000000"
+              title="Pure Black"
+            ></button>
+            <button
+              class="preset-btn"
+              data-color="#5865f2"
+              style="background: #5865f2"
+              title="Blurple"
+            ></button>
+          </div>
+          <div class="color-row" style="margin-top: 12px">
+            <div class="color-input">
+              <input type="color" id="bgColor" value="#313338" />
+              <span>Custom Background</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label>Effects</label>
+          <div class="toggle-container">
+            <div class="toggle" id="animationToggle"></div>
+            <span class="toggle-label">Animate gradient</span>
+          </div>
+          <div class="toggle-container" style="margin-top: 10px">
+            <div class="toggle" id="glowToggle"></div>
+            <span class="toggle-label">Always show glow (hover effect)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="preview-section">
+        <span
+          class="username usernameGradient twoColorGradient convenienceGlowGradient dnsFont gradient-name"
+          id="preview"
+          data-text="root na buiset"
+          >root na buiset</span
+        >
+      </div>
+      <p class="hint">Hover over the name to see the glow effect</p>
+    </div>
+
+    <script>
+      // Elements
+      const nameInput = document.getElementById('nameInput');
+      const fontPreset = document.getElementById('fontPreset');
+      const customFont = document.getElementById('customFont');
+      const fontSizeSlider = document.getElementById('fontSizeSlider');
+      const fontSizeValue = document.getElementById('fontSizeValue');
+      const color1 = document.getElementById('color1');
+      const color2 = document.getElementById('color2');
+      const color3 = document.getElementById('color3');
+      const bgColor = document.getElementById('bgColor');
+      const bgPresets = document.getElementById('bgPresets');
+      const preview = document.getElementById('preview');
+      const animationToggle = document.getElementById('animationToggle');
+      const glowToggle = document.getElementById('glowToggle');
+
+      // Font mappings
+      const fontFamilies = {
+        'gg sans':
+          "'gg sans', 'Noto Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+        tempo: "Tempo, 'gg sans', Arial, sans-serif",
+        noto: "'Noto Sans', sans-serif",
+        roboto: "'Roboto', sans-serif",
+        'open-sans': "'Open Sans', sans-serif",
+        lato: "'Lato', sans-serif",
+        montserrat: "'Montserrat', sans-serif"
+      };
+
+      function updatePreview() {
+        const name = nameInput.value || 'Username';
+        preview.textContent = name;
+        preview.setAttribute('data-text', name);
+
+        // Update gradient colors
+        preview.style.setProperty('--custom-gradient-color-1', color1.value);
+        preview.style.setProperty('--custom-gradient-color-2', color2.value);
+        preview.style.setProperty('--custom-gradient-color-3', color3.value);
+        preview.style.textDecorationColor = color1.value;
+
+        // Update background
+        document.body.style.backgroundColor = bgColor.value;
+
+        // Update font size
+        const fontSize = fontSizeSlider.value;
+        preview.style.fontSize = fontSize + 'px';
+        fontSizeValue.textContent = fontSize + 'px';
+
+        // Update font family
+        const selectedFont = fontPreset.value;
+        if (selectedFont === 'custom') {
+          preview.style.fontFamily =
+            customFont.value || fontFamilies['gg sans'];
+          // Add letter spacing for custom fonts like Tempo
+          preview.style.letterSpacing = '0.03em';
+        } else {
+          preview.style.fontFamily = fontFamilies[selectedFont];
+          // Add letter spacing for Tempo style
+          if (selectedFont === 'tempo') {
+            preview.style.letterSpacing = '0.03em';
+            preview.classList.add('zillaSlab');
+          } else {
+            preview.style.letterSpacing = 'normal';
+            preview.classList.remove('zillaSlab');
+          }
+        }
+      }
+
+      function handleFontPresetChange() {
+        if (fontPreset.value === 'custom') {
+          customFont.style.display = 'block';
+        } else {
+          customFont.style.display = 'none';
+        }
+        updatePreview();
+      }
+
+      function handleBgPresetClick(e) {
+        if (e.target.classList.contains('preset-btn')) {
+          // Update active state
+          document
+            .querySelectorAll('.preset-btn')
+            .forEach(btn => btn.classList.remove('active'));
+          e.target.classList.add('active');
+
+          // Update color picker and background
+          const color = e.target.dataset.color;
+          bgColor.value = color;
+          document.body.style.backgroundColor = color;
+        }
+      }
+
+      function handleBgColorChange() {
+        // Remove active from presets when custom color is selected
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+          if (btn.dataset.color.toLowerCase() === bgColor.value.toLowerCase()) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+        document.body.style.backgroundColor = bgColor.value;
+      }
+
+      function toggleAnimation() {
+        animationToggle.classList.toggle('active');
+        preview.classList.toggle('animated');
+      }
+
+      function toggleGlow() {
+        glowToggle.classList.toggle('active');
+        preview.classList.toggle('convenienceGlowGradientActive');
+      }
+
+      // Event listeners
+      nameInput.addEventListener('input', updatePreview);
+      fontPreset.addEventListener('change', handleFontPresetChange);
+      customFont.addEventListener('input', updatePreview);
+      fontSizeSlider.addEventListener('input', updatePreview);
+      color1.addEventListener('input', updatePreview);
+      color2.addEventListener('input', updatePreview);
+      color3.addEventListener('input', updatePreview);
+      bgColor.addEventListener('input', handleBgColorChange);
+      bgPresets.addEventListener('click', handleBgPresetClick);
+      animationToggle.addEventListener('click', toggleAnimation);
+      glowToggle.addEventListener('click', toggleGlow);
+
+      // Initialize
+      updatePreview();
+    </script>
+  </body>
+</html>
