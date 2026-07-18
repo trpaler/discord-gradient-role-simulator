@@ -394,6 +394,43 @@
         font-size: 11px;
         margin-top: 4px;
       }
+
+      .hex-display {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 12px;
+        padding: 10px 12px;
+        background: #1e1f22;
+        border-radius: 4px;
+      }
+
+      .hex-display span {
+        color: #dbdee1;
+        font-size: 13px;
+        font-family: 'Consolas', 'Monaco', monospace;
+        flex: 1;
+      }
+
+      .copy-btn {
+        background: #5865f2;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        padding: 6px 12px;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s ease;
+      }
+
+      .copy-btn:hover {
+        background: #4752c4;
+      }
+
+      .copy-btn.copied {
+        background: #23a559;
+      }
     </style>
   </head>
   <body>
@@ -460,6 +497,10 @@
               <input type="color" id="color2" value="#a8dffd" />
               <span>Color 2</span>
             </div>
+          </div>
+          <div class="hex-display">
+            <span id="hexCodes">Color 1: #a067f7, Color 2: #a8dffd</span>
+            <button class="copy-btn" id="copyBtn" title="Copy hex codes">Copy</button>
           </div>
         </div>
 
@@ -574,6 +615,8 @@
       const speedControl = document.getElementById('speedControl');
       const speedSlider = document.getElementById('speedSlider');
       const speedValue = document.getElementById('speedValue');
+      const hexCodes = document.getElementById('hexCodes');
+      const copyBtn = document.getElementById('copyBtn');
 
       // Font mappings
       const fontFamilies = {
@@ -596,6 +639,9 @@
         preview.style.setProperty('--custom-gradient-color-1', color1.value);
         preview.style.setProperty('--custom-gradient-color-2', color2.value);
         preview.style.textDecorationColor = color1.value;
+
+        // Update hex display
+        hexCodes.textContent = `Color 1: ${color1.value.toUpperCase()}, Color 2: ${color2.value.toUpperCase()}`;
 
         // Update background
         document.body.style.backgroundColor = bgColor.value;
@@ -681,6 +727,18 @@
         preview.style.setProperty('--animation-speed', speed + 's');
       }
 
+      function copyHexCodes() {
+        const text = `Color 1: ${color1.value.toUpperCase()}, Color 2: ${color2.value.toUpperCase()}`;
+        navigator.clipboard.writeText(text).then(() => {
+          copyBtn.textContent = 'Copied!';
+          copyBtn.classList.add('copied');
+          setTimeout(() => {
+            copyBtn.textContent = 'Copy';
+            copyBtn.classList.remove('copied');
+          }, 2000);
+        });
+      }
+
       // Event listeners
       nameInput.addEventListener('input', updatePreview);
       fontPreset.addEventListener('change', handleFontPresetChange);
@@ -693,6 +751,7 @@
       animationToggle.addEventListener('click', toggleAnimation);
       glowToggle.addEventListener('click', toggleGlow);
       speedSlider.addEventListener('input', updateSpeed);
+      copyBtn.addEventListener('click', copyHexCodes);
 
       // Initialize
       updatePreview();
