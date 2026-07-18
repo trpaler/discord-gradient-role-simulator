@@ -321,13 +321,13 @@
         font-size: 14px;
       }
 
-      /* Animated gradient - Discord exact keyframes */
+      /* Animated gradient - Discord wave effect */
       .gradient-name.animated {
-        animation: gradientUsernameAnimation 4s linear infinite;
+        animation: gradientUsernameAnimation var(--animation-speed, 4s) linear infinite;
       }
 
       .gradient-name.animated::after {
-        animation: gradientUsernameAnimation 4s linear infinite;
+        animation: gradientUsernameAnimation var(--animation-speed, 4s) linear infinite;
       }
 
       @keyframes gradientUsernameAnimation {
@@ -545,6 +545,16 @@
             <span class="toggle-label">Always show glow (hover effect)</span>
           </div>
         </div>
+
+        <div class="control-group" id="speedControl" style="display: none">
+          <label>Animation Speed</label>
+          <input type="range" id="speedSlider" min="0.5" max="10" step="0.5" value="4" />
+          <div class="range-labels">
+            <span>Fast (0.5s)</span>
+            <span id="speedValue">4s</span>
+            <span>Slow (10s)</span>
+          </div>
+        </div>
       </div>
 
       <div class="preview-section">
@@ -572,6 +582,9 @@
       const preview = document.getElementById('preview');
       const animationToggle = document.getElementById('animationToggle');
       const glowToggle = document.getElementById('glowToggle');
+      const speedControl = document.getElementById('speedControl');
+      const speedSlider = document.getElementById('speedSlider');
+      const speedValue = document.getElementById('speedValue');
 
       // Font mappings
       const fontFamilies = {
@@ -660,11 +673,23 @@
       function toggleAnimation() {
         animationToggle.classList.toggle('active');
         preview.classList.toggle('animated');
+        // Show/hide speed control
+        if (animationToggle.classList.contains('active')) {
+          speedControl.style.display = 'block';
+        } else {
+          speedControl.style.display = 'none';
+        }
       }
 
       function toggleGlow() {
         glowToggle.classList.toggle('active');
         preview.classList.toggle('convenienceGlowGradientActive');
+      }
+
+      function updateSpeed() {
+        const speed = speedSlider.value;
+        speedValue.textContent = speed + 's';
+        preview.style.setProperty('--animation-speed', speed + 's');
       }
 
       // Event listeners
@@ -678,9 +703,11 @@
       bgPresets.addEventListener('click', handleBgPresetClick);
       animationToggle.addEventListener('click', toggleAnimation);
       glowToggle.addEventListener('click', toggleGlow);
+      speedSlider.addEventListener('input', updateSpeed);
 
       // Initialize
       updatePreview();
+      updateSpeed();
     </script>
   </body>
 </html>
