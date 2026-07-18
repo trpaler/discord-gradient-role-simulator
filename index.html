@@ -321,29 +321,18 @@
         font-size: 14px;
       }
 
-      /* Animated gradient - Discord wave effect */
+      /* Animated gradient - seamless loop */
       .gradient-name.animated {
-        animation: gradientUsernameAnimation var(--animation-speed, 4s) linear infinite;
+        animation: gradientLoop var(--animation-speed, 4s) linear infinite;
       }
 
       .gradient-name.animated::after {
-        animation: gradientUsernameAnimation var(--animation-speed, 4s) linear infinite;
+        animation: gradientLoop var(--animation-speed, 4s) linear infinite;
       }
 
-      @keyframes gradientUsernameAnimation {
-        0% { background-position-x: 43px; }
-        8.33% { background-position-x: 98px; }
-        16.66% { background-position-x: 79px; }
-        25% { background-position-x: 53px; }
-        33.33% { background-position-x: 92px; }
-        41.66% { background-position-x: 28px; }
-        50% { background-position-x: 63px; }
-        58.33% { background-position-x: 2px; }
-        66.66% { background-position-x: 41px; }
-        75% { background-position-x: 75px; }
-        83.33% { background-position-x: 14px; }
-        91.66% { background-position-x: 53px; }
-        100% { background-position-x: 92px; }
+      @keyframes gradientLoop {
+        0% { background-position-x: 0; }
+        100% { background-position-x: 100px; }
       }
 
       /* Background preset buttons */
