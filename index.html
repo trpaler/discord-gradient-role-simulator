@@ -613,24 +613,22 @@
 
         // Update font size
         const fontSize = fontSizeSlider.value;
-        preview.style.fontSize = fontSize + 'px';
+        preview.style.setProperty('font-size', fontSize + 'px', 'important');
         fontSizeValue.textContent = fontSize + 'px';
 
         // Update font family
         const selectedFont = fontPreset.value;
         if (selectedFont === 'custom') {
-          preview.style.fontFamily =
-            customFont.value || fontFamilies['gg sans'];
-          // Add letter spacing for custom fonts like Tempo
-          preview.style.letterSpacing = '0.03em';
+          preview.style.setProperty('font-family', customFont.value || fontFamilies['gg sans'], 'important');
+          preview.style.setProperty('letter-spacing', '0.03em', 'important');
         } else {
-          preview.style.fontFamily = fontFamilies[selectedFont];
+          preview.style.setProperty('font-family', fontFamilies[selectedFont], 'important');
           // Add letter spacing for Tempo style
           if (selectedFont === 'tempo') {
-            preview.style.letterSpacing = '0.03em';
+            preview.style.setProperty('letter-spacing', '0.03em', 'important');
             preview.classList.add('zillaSlab');
           } else {
-            preview.style.letterSpacing = 'normal';
+            preview.style.setProperty('letter-spacing', 'normal', 'important');
             preview.classList.remove('zillaSlab');
           }
         }
